@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр ноутбука для детей | Куда нажимать</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #222;
+  }
+  .header {
+    background: rgba(255,255,255,0.95);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header h1 {
+    font-size: 1.4rem;
+    color: #333;
+  }
+  .lang-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background: #4f46e5;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .lang-btn:hover { background: #4338ca; }
+  .container {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+  .desktop {
+    background: #0f766e;
+    background-image: linear-gradient(180deg, #0d9488 0%, #115e59 100%);
+    border-radius: 12px;
+    height: 520px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border: 8px solid #1e293b;
+  }
+  .taskbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: rgba(30,41,59,0.92);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 8px;
+  }
+  .start-btn {
+    width: 40px;
+    height: 40px;
+    background: #3b82f6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 22px;
+    color: white;
+    transition: 0.2s;
+  }
+  .start-btn:hover, .icon:hover, .taskbar-icon:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+  .taskbar-icon {
+    width: 36px;
+    height: 36px;
+    background: #64748b;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: white;
+  }
+  .clock {
+    margin-left: auto;
+    color: white;
+    font-size: 13px;
+    text-align: right;
+    padding-right: 10px;
+  }
+  .desktop-icons {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .icon {
+    width: 70px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    font-size: 12px;
+    text-shadow: 0 1px 3px black;
+  }
+  .icon-img {
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 4px;
+    border: 2px solid transparent;
+  }
+  .icon:hover .icon-img {
+    border-color: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.3);
+  }
+  .info-panel {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    min-height: 180px;
+  }
+  .info-panel h2 {
+    color: #4f46e5;
+    margin-bottom: 12px;
+    font-size: 1.5rem;
+  }
+  .info-panel p {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .highlight {
+    background: #fef08a;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .tip {
+    background: #dbeafe;
+    border-left: 5px solid #3b82f6;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 12px;
+    font-size: 1.05rem;
+  }
+  .lesson-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .lesson-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: 0.2s;
+    border: 3px solid transparent;
+  }
+  .lesson-card:hover, .lesson-card.active {
+    border-color: #4f46e5;
+    transform: translateY(-3px);
+  }
+  .lesson-card span {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .keyboard-area {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    color: white;
+  }
+  .key-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .key {
+    background: #334155;
+    border-radius: 6px;
+    padding: 10px 14px;
+    min-width: 40px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.15s;
+    border: 2px solid #475569;
+  }
+  .key:hover, .key.active {
+    background: #3b82f6;
+    border-color: #60a5fa;
+    transform: scale(1.08);
+  }
+  .key.special {
+    background: #475569;
+    min-width: 70px;
+  }
+  footer {
+    text-align: center;
+    padding: 30px;
+    color: white;
+    font-size: 0.95rem;
+  }
+  @media (max-width: 600px) {
+    .desktop { height: 400px; }
+    .header h1 { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>🖥️ Тренажёр ноутбука для детей</h1>
+    <button class="lang-btn" onclick="toggleLang()">🇰🇿 Қазақша / 🇷🇺 Русский</button>
+  </div>
+
+  <div class="container">
+    <div class="desktop" id="desktop">
+      <div class="desktop-icons">
+        <div class="icon" onclick="showInfo('recycle')">
+          <div class="icon-img">🗑️</div>
+          <div data-ru="Корзина" data-kk="Себет">Корзина</div>
+        </div>
+        <div class="icon" onclick="showInfo('thispc')">
+          <div class="icon-img">💻</div>
+          <div data-ru="Этот компьютер" data-kk="Бұл компьютер">Этот компьютер</div>
+        </div>
+        <div class="icon" onclick="showInfo('folder')">
+          <div class="icon-img">📁</div>
+          <div data-ru="Документы" data-kk="Құжаттар">Документы</div>
+        </div>
+        <div class="icon" onclick="showInfo('edge')">
+          <div class="icon-img">🌐</div>
+          <div data-ru="Браузер" data-kk="Браузер">Браузер</div>
+        </div>
+      </div>
+
+      <div class="taskbar">
+        <div class="start-btn" onclick="showInfo('start')" title="Пуск">⊞</div>
+        <div class="taskbar-icon" onclick="showInfo('search')">🔍</div>
+        <div class="taskbar-icon" onclick="showInfo('explorer')">📂</div>
+        <div class="taskbar-icon" onclick="showInfo('edge')">🌐</div>
+        <div class="taskbar-icon" onclick="showInfo('settings')">⚙️</div>
+        <div class="clock">
+          <div id="time">12:00</div>
+          <div id="date">06.10.2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+      <h2 id="infoTitle">👆 Нажми на любую кнопку или иконку</h2>
+      <p id="infoText">Это интерактивный тренажёр. Кликай по элементам рабочего стола и панели задач — я расскажу, что это и куда нажимать.</p>
+      <div class="tip" id="infoTip">Совет: начни с синей кнопки «Пуск» внизу слева!</div>
+    </div>
+
+    <div class="lesson-list">
+      <div class="lesson-card" onclick="showInfo('start')">
+        <span>⊞</span>
+        <div data-ru="Кнопка Пуск" data-kk="Бастау түймесі">Кнопка Пуск</div>
+      </div>
+      <div class="lesson-card" onclick="showInfo('taskbar')">
+        <span>📊</span>
+        <div data-ru="Панель задач" data-kk="Тапсырмалар жолағы">Панель задач</div>
+      </div>
+      <div class="lesson-card" onclick="showInfo('keyboard')">
+        <span>⌨️</span>
+        <div data-ru="Клавиатура" data-kk="Пернетақта">Клавиатура</div>
+      </div>
+      <div class="lesson-card" onclick="showInfo('language')">
+        <span>🌐</span>
+        <div data-ru="Смена языка" data-kk="Тілді ауыстыру">Смена языка</div>
+      </div>
+      <div class="lesson-card" onclick="showInfo('mouse')">
+        <span>🖱️</span>
+        <div data-ru="Мышь / Тачпад" data-kk="Тінтуір / Тачпад">Мышь / Тачпад</div>
+      </div>
+      <div class="lesson-card" onclick="showInfo('window')">
+        <span>🪟</span>
+        <div data-ru="Окно программы" data-kk="Бағдарлама терезесі">Окно программы</div>
+      </div>
+    </div>
+
+    <div class="keyboard-area">
+      <h3 style="margin-bottom:15px; text-align:center;" data-ru="Клавиатура — нажми на клавишу" data-kk="Пернетақта — пернені басыңыз">Клавиатура — нажми на клавишу</h3>
+      <div class="key-row">
+        <div class="key special" onclick="showInfo('esc')">Esc</div>
+        <div class="key" onclick="showInfo('f')">F1</div>
+        <div class="key" onclick="showInfo('f')">F2</div>
+        <div class="key" onclick="showInfo('f')">F3</div>
+        <div class="key" onclick="showInfo('f')">F4</div>
+        <div class="key special" onclick="showInfo('win')">Win</div>
+        <div class="key special" onclick="showInfo('alt')">Alt</div>
+        <div class="key special" onclick="showInfo('ctrl')">Ctrl</div>
+      </div>
+      <div class="key-row">
+        <div class="key" onclick="showInfo('letter')">Й</div>
+        <div class="key" onclick="showInfo('letter')">Ц</div>
+        <div class="key" onclick="showInfo('letter')">У</div>
+        <div class="key" onclick="showInfo('letter')">К</div>
+        <div class="key" onclick="showInfo('letter')">Е</div>
+        <div class="key" onclick="showInfo('letter')">Н</div>
+        <div class="key" onclick="showInfo('letter')">Г</div>
+        <div class="key special" onclick="showInfo('space')">Пробел</div>
+        <div class="key special" onclick="showInfo('enter')">Enter</div>
+        <div class="key special" onclick="showInfo('backspace')">⌫</div>
+      </div>
+      <div class="key-row">
+        <div class="key special" onclick="showInfo('shift')">Shift</div>
+        <div class="key special" onclick="showInfo('caps')">Caps Lock</div>
+        <div class="key special" onclick="showInfo('langkey')">Alt+Shift</div>
+        <div class="key special" onclick="showInfo('langkey')">Win+Пробел</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Сделано бесплатно для детей • Русский + Казахский • 2026
+  </footer>
+
+<script>
+const texts = {
+  start: {
+    ru: {
+      title: "Кнопка «Пуск» (Start)",
+      text: "Это самая важная кнопка! Находится внизу слева на панели задач. Нажми на неё, чтобы открыть меню всех программ, настроек и поиска.",
+      tip: "Нажми один раз левой кнопкой мыши. Откроется большое меню. Отсюда можно запустить любую программу."
+    },
+    kk: {
+      title: "«Бастау» түймесі (Start)",
+      text: "Бұл ең маңызды түйме! Ол тапсырмалар жолағының төменгі сол жағында орналасқан. Оны басып, барлық бағдарламалар, параметрлер және іздеу мәзірін ашыңыз.",
+      tip: "Тінтуірдің сол жақ батырмасын бір рет басыңыз. Үлкен мәзір ашылады. Осыдан кез келген бағдарламаны іске қосуға болады."
+    }
+  },
+  search: {
+    ru: {
+      title: "Поиск",
+      text: "Иконка лупы на панели задач. Позволяет быстро найти файлы, программы и настройки.",
+      tip: "Кликни и начни печатать название того, что ищешь. Например: «блокнот» или «настройки»."
+    },
+    kk: {
+      title: "Іздеу",
+      text: "Тапсырмалар жолағындағы лупа белгішесі. Файлдарды, бағдарламаларды және параметрлерді жылдам табуға мүмкіндік береді.",
+      tip: "Басып, іздеген нәрсенің атауын теруді бастаңыз. Мысалы: «блокнот» немесе «параметрлер»."
+    }
+  },
+  explorer: {
+    ru: {
+      title: "Проводник (Файлы)",
+      text: "Открывает окно, где ты видишь все папки и файлы на компьютере.",
+      tip: "Здесь можно создавать папки, копировать и удалять файлы. Двойной клик по папке — открыть."
+    },
+    kk: {
+      title: "Зерттеуші (Файлдар)",
+      text: "Компьютердегі барлық қалталар мен файлдарды көретін терезені ашады.",
+      tip: "Мұнда қалталар жасауға, файлдарды көшіруге және жоюға болады. Қалтаға екі рет басу — ашу."
+    }
+  },
+  settings: {
+    ru: {
+      title: "Параметры (Настройки)",
+      text: "Здесь меняют язык, звук, яркость, Wi-Fi, фон рабочего стола и многое другое.",
+      tip: "Открой Пуск → Параметры (шестерёнка). Или Win + I."
+    },
+    kk: {
+      title: "Параметрлер (Баптаулар)",
+      text: "Мұнда тілді, дыбысты, жарықтықты, Wi-Fi, жұмыс үстелінің фонын және басқаларды өзгертеді.",
+      tip: "Бастау → Параметрлер (тегершік) ашыңыз. Немесе Win + I."
+    }
+  },
+  recycle: {
+    ru: {
+      title: "Корзина",
+      text: "Сюда попадают удалённые файлы. Их можно восстановить или удалить навсегда.",
+      tip: "Двойной клик — открыть. Правой кнопкой → «Очистить корзину»."
+    },
+    kk: {
+      title: "Себет",
+      text: "Жойылған файлдар осында түседі. Оларды қалпына келтіруге немесе біржола жоюға болады.",
+      tip: "Екі рет басу — ашу. Оң жақ батырма → «Себетті тазалау»."
+    }
+  },
+  thispc: {
+    ru: {
+      title: "Этот компьютер",
+      text: "Показывает все диски (C:, D:) и подключённые устройства (флешка, телефон).",
+      tip: "Двойной клик, чтобы увидеть содержимое дисков."
+    },
+    kk: {
+      title: "Бұл компьютер",
+      text: "Барлық дискілерді (C:, D:) және қосылған құрылғыларды (флешка, телефон) көрсетеді.",
+      tip: "Дискілердің мазмұнын көру үшін екі рет басыңыз."
+    }
+  },
+  folder: {
+    ru: {
+      title: "Папка «Документы»",
+      text: "Специальная папка для твоих файлов: рисунков, текстов, домашних заданий.",
+      tip: "Сюда удобно сохранять всё важное. Можно создать свои подпапки."
+    },
+    kk: {
+      title: "«Құжаттар» қалтасы",
+      text: "Сіздің файлдарыңызға арналған арнайы қалта: суреттер, мәтіндер, үй тапсырмалары.",
+      tip: "Мұнда барлық маңыздыны сақтау ыңғайлы. Өз ішкі қалталарыңызды жасауға болады."
+    }
+  },
+  edge: {
+    ru: {
+      title: "Браузер (Интернет)",
+      text: "Программа для открытия сайтов в интернете. Может называться Edge, Chrome, Яндекс.",
+      tip: "Кликни по иконке → откроется окно. Вверху есть строка адреса — туда пиши название сайта."
+    },
+    kk: {
+      title: "Браузер (Интернет)",
+      text: "Интернеттегі сайттарды ашуға арналған бағдарлама. Edge, Chrome, Яндекс деп аталуы мүмкін.",
+      tip: "Белгішеге басыңыз → терезе ашылады. Жоғарыда мекенжай жолы бар — сол жерге сайт атауын жазыңыз."
+    }
+  },
+  taskbar: {
+    ru: {
+      title: "Панель задач",
+      text: "Полоска внизу экрана. На ней кнопка Пуск, открытые программы и часы.",
+      tip: "Если программа открыта — её иконка светится на панели. Кликни, чтобы переключиться."
+    },
+    kk: {
+      title: "Тапсырмалар жолағы",
+      text: "Экранның төменгі жолағы. Онда Бастау түймесі, ашық бағдарламалар және сағат бар.",
+      tip: "Бағдарлама ашық болса — оның белгішесі жолақта жарқырайды. Ауысу үшін басыңыз."
+    }
+  },
+  keyboard: {
+    ru: {
+      title: "Клавиатура",
+      text: "С её помощью ты печатаешь буквы, цифры и команды. Есть специальные клавиши: Win, Alt, Ctrl, Shift.",
+      tip: "Учись печатать не глядя на клавиши — это называется «слепая печать»."
+    },
+    kk: {
+      title: "Пернетақта",
+      text: "Оның көмегімен сіз әріптерді, сандарды және командаларды тересіз. Арнайы пернелер бар: Win, Alt, Ctrl, Shift.",
+      tip: "Пернелерге қарамай теруді үйреніңіз — бұл «соқыр теру» деп аталады."
+    }
+  },
+  language: {
+    ru: {
+      title: "Как переключить язык (русский ↔ казахский)",
+      text: "Самые удобные способы:\n1. Win + Пробел (кнопка Windows + пробел)\n2. Alt + Shift\n\nВ правом нижнем углу панели задач тоже есть значок языка (РУС / ҚАЗ).",
+      tip: "Нажми несколько раз Win+Пробел и смотри, как меняется язык внизу справа."
+    },
+    kk: {
+      title: "Тілді қалай ауыстыруға болады (орыс ↔ қазақ)",
+      text: "Ең ыңғайлы тәсілдер:\n1. Win + Бос орын (Windows түймесі + бос орын)\n2. Alt + Shift\n\nТапсырмалар жолағының оң жақ төменгі бұрышында да тіл белгішесі бар (РУС / ҚАЗ).",
+      tip: "Win+Бос орынды бірнеше рет басып, оң жақтағы тілдің қалай өзгеретінін қараңыз."
+    }
+  },
+  mouse: {
+    ru: {
+      title: "Мышь и тачпад",
+      text: "Левая кнопка — основной клик (выбрать, открыть).\nПравая кнопка — меню с дополнительными действиями.\nКолёсико — прокрутка.\nНа ноутбуке вместо мыши — тачпад (сенсорная панель).",
+      tip: "Двойной клик левой кнопкой = открыть. Один клик = выделить."
+    },
+    kk: {
+      title: "Тінтуір және тачпад",
+      text: "Сол жақ батырма — негізгі басу (таңдау, ашу).\nОң жақ батырма — қосымша әрекеттер мәзірі.\nДөңгелек — айналдыру.\nНоутбукта тінтуірдің орнына — тачпад (сенсорлық панель).",
+      tip: "Сол жақ батырмамен екі рет басу = ашу. Бір рет басу = бөлектеу."
+    }
+  },
+  window: {
+    ru: {
+      title: "Окно программы",
+      text: "У каждого окна есть три кнопки в правом верхнем углу:\n— Свернуть (_)\n— Развернуть / Восстановить (□)\n— Закрыть (×)",
+      tip: "Кнопка × закрывает программу. Будь осторожен — несохранённые данные могут пропасть!"
+    },
+    kk: {
+      title: "Бағдарлама терезесі",
+      text: "Әр терезенің оң жақ жоғарғы бұрышында үш түйме бар:\n— Жию (_)\n— Кеңейту / Қалпына келтіру (□)\n— Жабу (×)",
+      tip: "× түймесі бағдарламаны жабады. Абайлаңыз — сақталмаған деректер жоғалып кетуі мүмкін!"
+    }
+  },
+  win: {
+    ru: {
+      title: "Клавиша Windows (Win)",
+      text: "Кнопка с флажком Windows. Открывает меню Пуск. Также используется в сочетаниях: Win+E (проводник), Win+I (настройки), Win+D (показать рабочий стол).",
+      tip: "Нажми Win один раз — откроется Пуск."
+    },
+    kk: {
+      title: "Windows пернесі (Win)",
+      text: "Windows туы бар түйме. Бастау мәзірін ашады. Сондай-ақ комбинацияларда қолданылады: Win+E (зерттеуші), Win+I (параметрлер), Win+D (жұмыс үстелін көрсету).",
+      tip: "Win-ді бір рет басыңыз — Бастау ашылады."
+    }
+  },
+  alt: {
+    ru: {
+      title: "Клавиша Alt",
+      text: "Используется вместе с другими клавишами. Alt+Tab — переключение между окнами. Alt+F4 — закрыть текущее окно.",
+      tip: "Зажми Alt и нажимай Tab — увидишь все открытые окна."
+    },
+    kk: {
+      title: "Alt пернесі",
+      text: "Басқа пернелермен бірге қолданылады. Alt+Tab — терезелер арасында ауысу. Alt+F4 — ағымдағы терезені жабу.",
+      tip: "Alt-ты басып тұрып Tab басыңыз — барлық ашық терезелерді көресіз."
+    }
+  },
+  ctrl: {
+    ru: {
+      title: "Клавиша Ctrl",
+      text: "Очень полезная! Ctrl+C — копировать, Ctrl+V — вставить, Ctrl+Z — отменить, Ctrl+A — выделить всё, Ctrl+S — сохранить.",
+      tip: "Запомни эти сочетания — они экономят много времени."
+    },
+    kk: {
+      title: "Ctrl пернесі",
+      text: "Өте пайдалы! Ctrl+C — көшіру, Ctrl+V — қою, Ctrl+Z — болдырмау, Ctrl+A — барлығын бөлектеу, Ctrl+S — сақтау.",
+      tip: "Осы комбинацияларды есте сақтаңыз — олар көп уақытты үнемдейді."
+    }
+  },
+  shift: {
+    ru: {
+      title: "Клавиша Shift",
+      text: "Делает буквы большими (заглавными). Также используется в сочетаниях. Shift + стрелка — выделить текст.",
+      tip: "Зажми Shift и нажми букву — получится большая буква."
+    },
+    kk: {
+      title: "Shift пернесі",
+      text: "Әріптерді үлкен (бас әріп) етеді. Сондай-ақ комбинацияларда қолданылады. Shift + көрсеткі — мәтінді бөлектеу.",
+      tip: "Shift-ты басып тұрып әріпті басыңыз — үлкен әріп шығады."
+    }
+  },
+  caps: {
+    ru: {
+      title: "Caps Lock",
+      text: "Включает режим постоянных заглавных букв. Нажми ещё раз, чтобы выключить. Обычно горит индикатор.",
+      tip: "Если все буквы получаются большими — проверь, не включён ли Caps Lock."
+    },
+    kk: {
+      title: "Caps Lock",
+      text: "Үнемі бас әріптер режимін қосады. Өшіру үшін қайта басыңыз. Әдетте индикатор жанады.",
+      tip: "Егер барлық әріптер үлкен болса — Caps Lock қосулы емес пе тексеріңіз."
+    }
+  },
+  space: {
+    ru: {
+      title: "Пробел (Space)",
+      text: "Самая длинная клавиша. Ставит пробел между словами.",
+      tip: "Нажимай большим пальцем."
+    },
+    kk: {
+      title: "Бос орын (Space)",
+      text: "Ең ұзын перне. Сөздер арасында бос орын қояды.",
+      tip: "Үлкен саусақпен басыңыз."
+    }
+  },
+  enter: {
+    ru: {
+      title: "Enter (Ввод)",
+      text: "Подтверждает действие или переводит строку в тексте. В играх часто = «ОК».",
+      tip: "После ввода пароля или адреса сайта нажми Enter."
+    },
+    kk: {
+      title: "Enter (Енгізу)",
+      text: "Әрекетті растайды немесе мәтінде жолды ауыстырады. Ойындарда жиі = «OK».",
+      tip: "Құпия сөзді немесе сайт мекенжайын енгізгеннен кейін Enter басыңыз."
+    }
+  },
+  backspace: {
+    ru: {
+      title: "Backspace (Стереть)",
+      text: "Удаляет символ слева от курсора. Как ластик.",
+      tip: "Если ошибся при печати — жми Backspace."
+    },
+    kk: {
+      title: "Backspace (Өшіру)",
+      text: "Курсордың сол жағындағы таңбаны жояды. Өшіргіш сияқты.",
+      tip: "Теру кезінде қателессеңіз — Backspace басыңыз."
+    }
+  },
+  esc: {
+    ru: {
+      title: "Esc (Escape)",
+      text: "Отменяет действие, закрывает меню или выходит из полноэкранного режима.",
+      tip: "Если что-то открылось лишнее — попробуй Esc."
+    },
+    kk: {
+      title: "Esc (Escape)",
+      text: "Әрекетті болдырмайды, мәзірді жабады немесе толық экран режимінен шығады.",
+      tip: "Егер артық нәрсе ашылса — Esc-ті қолданып көріңіз."
+    }
+  },
+  f: {
+    ru: {
+      title: "Клавиши F1–F12",
+      text: "Функциональные клавиши. F1 обычно открывает справку. F5 — обновить страницу. F11 — полный экран.",
+      tip: "В разных программах они делают разное."
+    },
+    kk: {
+      title: "F1–F12 пернелері",
+      text: "Функционалдық пернелер. F1 әдетте анықтаманы ашады. F5 — бетті жаңарту. F11 — толық экран.",
+      tip: "Әр түрлі бағдарламаларда олар әртүрлі әрекет етеді."
+    }
+  },
+  letter: {
+    ru: {
+      title: "Буквенные клавиши",
+      text: "На них печатают текст. Раскладка русская / казахская / английская переключается сочетаниями клавиш.",
+      tip: "Чтобы писать на казахском — переключи язык (Win+Пробел)."
+    },
+    kk: {
+      title: "Әріптік пернелер",
+      text: "Оларда мәтін теріледі. Орыс / қазақ / ағылшын орналасуы перне комбинацияларымен ауыстырылады.",
+      tip: "Қазақша жазу үшін — тілді ауыстырыңыз (Win+Бос орын)."
+    }
+  },
+  langkey: {
+    ru: {
+      title: "Переключение языка",
+      text: "Win + Пробел или Alt + Shift — самые быстрые способы сменить язык ввода.",
+      tip: "Попробуй прямо сейчас на своём ноутбуке!"
+    },
+    kk: {
+      title: "Тілді ауыстыру",
+      text: "Win + Бос орын немесе Alt + Shift — енгізу тілін өзгертудің ең жылдам тәсілдері.",
+      tip: "Қазір өз ноутбугыңызда қолданып көріңіз!"
+    }
+  }
+};
+
+let currentLang = 'ru';
+
+function toggleLang() {
+  currentLang = currentLang === 'ru' ? 'kk' : 'ru';
+  document.querySelectorAll('[data-ru]').forEach(el => {
+    el.textContent = el.getAttribute('data-' + currentLang);
+  });
+}
+
+function showInfo(key) {
+  const data = texts[key];
+  if (!data) return;
+  const t = data[currentLang];
+  document.getElementById('infoTitle').textContent = t.title;
+  document.getElementById('infoText').innerHTML = t.text.replace(/\n/g, '<br>');
+  document.getElementById('infoTip').textContent = t.tip;
+  
+  document.querySelectorAll('.lesson-card').forEach(c => c.classList.remove('active'));
+}
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('time').textContent = now.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('date').textContent = now.toLocaleDateString('ru-RU');
+}
+setInterval(updateClock, 1000);
+updateClock();
+</script>
+</body>
+</html>
